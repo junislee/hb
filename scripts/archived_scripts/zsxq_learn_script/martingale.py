@@ -11,7 +11,7 @@ from typing import Any, List
 from hummingbot.core.data_type.common import OrderType
 from hummingbot.core.utils.async_utils import safe_ensure_future
 
-
+# 文章链接：https://zhuanlan.zhihu.com/p/628285382
 class Martingale(ScriptStrategyBase):
 
     last_ordered_ts = 0
