@@ -150,3 +150,19 @@ To have your exchange connector or other pull request merged into the codebase, 
 
 * **License**: Hummingbot is licensed under [Apache 2.0](./LICENSE).
 * **Data collection**: read important information regarding [Hummingbot Data Collection](./DATA_COLLECTION.md).
+
+## Install VectorBT PRO
+```
+conda create --name vectorbtpro python=3.10
+conda activate vectorbtpro
+
+# mac m1芯 用conda命令安装这三个库，再重新用命令安装就好了
+conda install -c anaconda hdf5
+conda install -c conda-forge ta-lib
+conda install -c conda-forge osqp
+
+pip install -U "vectorbtpro[base] @ git+https://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@github.com/polakowo/vectorbt.pro.git"
+```
+
+
+
