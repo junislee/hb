@@ -48,17 +48,14 @@ class TrailingGridMultPairsConfig(StrategyV2ConfigTrailing):
     k: int = 17
     d: int = 4
 
+    grid_max=100,
+    grid_open=0.02,
+    grid_close=0.01,
+    mart_open=0.10,
+    open_order_type=OrderType.MARKET,
+    take_profit_order_type=OrderType.MARKET
 
-    @property
-    def trailing_grid_config(self) -> TrailingGridConfig:
-        return TrailingGridConfig(
-            grid_max=100,
-            grid_open=0.02,
-            grid_close=0.01,
-            mart_open=0.10,
-            open_order_type=OrderType.MARKET,
-            take_profit_order_type=OrderType.MARKET
-        )
+
 
 
 def grid_siganl(df=None, k: int=0, d: int=0):
@@ -148,7 +145,14 @@ class TrailingGridMultPairs(StrategyV2Trailing):
                             connector_name=connector_name,
                             side=TradeType.BUY,
                             amount_quote=self.config.order_amount_quote,
-                            trailing_grid_config= self.config.trailing_grid_config,
+                            grid_max=self.config.grid_max,
+                            grid_open=self.config.grid_open,
+                            grid_close=self.config.grid_close,
+                            mart_open=self.config.mart_open,
+                            open_order_type=self.config.open_order_type,
+                            take_profit_order_type=self.config.take_profit_order_type,
+                            interval=self.config.interval,
+                            max_records=self.max_records,
                             signal_func=grid_siganl,
                             signal_func_args=(),
                             signal_func_kwargs={'k':17, 'd':4}

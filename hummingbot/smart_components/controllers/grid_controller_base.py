@@ -3,7 +3,7 @@ from decimal import Decimal
 from typing import Dict, List, Optional, Set
 
 from pydantic import Field, validator
-
+import asyncio
 from hummingbot.client.config.config_data_types import ClientFieldData
 from hummingbot.core.data_type.common import OrderType, PositionMode, PriceType, TradeType
 from hummingbot.smart_components.controllers.controller_base import ControllerBase, ControllerConfigBase
@@ -33,9 +33,28 @@ class GridControllerConfigBase(ControllerConfigBase):
     ## 策略参数存储
     params: Dict[str, Dict] = {}
 
-    # ===================================
-    #  需要新增参数 todo
+    @staticmethod
+    def gen_executor_signal():
+        """
+        这个方法需要实现, 传递给executor
+        """
+        raise NotImplementedError
 
+    ## 将str side转换为对应内部数据格式
+    @validator('params', pre=True, always=True)
+    def parse_params_config(cls, v) -> Dict[str, Dict]:
+        if isinstance(v, Dict):
+            for pair, value in v.items():
+                if value["side"] == "BUY":
+                    v[pair]["side"] = TradeType.BUY
+                elif value["side"] == "SELL":
+                    v[pair]["side"] = TradeType.SELL
+                else:
+                    raise ValueError
+            return v
+        else:
+            raise TypeError
+        
     def update_markets(self, markets: Dict[str, Set[str]]) -> Dict[str, Set[str]]:
         for connector_name in self.markets.keys():
             if connector_name not in markets:
@@ -57,6 +76,8 @@ class GridControllerBase(ControllerBase):
         super().__init__(config, *args, **kwargs)
         self.config = config
         self._open = []
+        self.stop_queue = asyncio.Queue()
+        self.listen_to_executor_stop_task: asyncio.Task = asyncio.create_task(self.listen_to_executor_stop())
 
 
     def determine_executor_actions(self) -> List[ExecutorAction]:
@@ -81,6 +102,20 @@ class GridControllerBase(ControllerBase):
         """
         raise NotImplementedError
 
+    def on_stop(self):
+        self.listen_to_executor_stop_task.cancel()
+
+    async def listen_to_executor_stop(self):
+        """
+        Asynchronously listen to actions from the controllers and execute them.
+        """
+        while True:
+            try:
+                ## 在这里收到executor shutdown事件后，关闭对应pair的数据
+                pair = await self.stop_queue.get()
+                self.market_data_provider.candles_feeds[pair].stop()
+            except Exception as e:
+                self.logger().error(f"Error executing action: {e}", exc_info=True)
 
     def create_actions_proposal(self) -> List[ExecutorAction]:
         """
@@ -89,22 +124,19 @@ class GridControllerBase(ControllerBase):
         create_actions = []
         for connector_name, trading_pairs in self.config.markets.items():
             for trading_pair in trading_pairs:
-                if trading_pair not in self._open:
+                if self.processed_data["signal"] == 1 and trading_pair not in self._open:
                     self.logger().info(
                         f"{connector_name}-{trading_pair}进入逻辑，开启网格"
                     )
                     create_actions.append(CreateExecutorAction(
                         executor_config=TrailingGridExecutorConfig(
-                            timestamp=self.current_timestamp,
-                            leverage=self.config.leverage,
                             trading_pair=trading_pair,
                             connector_name=connector_name,
-                            side=TradeType.BUY,
-                            amount_quote=self.config.order_amount_quote,
-                            trailing_grid_config=self.config,
-                            signal_func=self.grid_siganl,
+                            signal_func=self.config.gen_executor_signal,
                             signal_func_args=(),
-                            signal_func_kwargs={'k': 17, 'd': 4}
+                            signal_func_kwargs=self.config[trading_pair]["signal_func_args"],
+                            stop_queue=self.stop_queue,
+                            **self.config[trading_pair]
                         )))
                     self._open.append(trading_pair)
         return create_actions
@@ -112,11 +144,11 @@ class GridControllerBase(ControllerBase):
 
     def change_candles(self):
         # todo
-        ## 关闭不需要的candles
-
         ## 启动需要的candles
-        for candles_config in self.config.candles_config:
-            self.market_data_provider.initialize_candles_feed(candles_config)
+        for connector_name, pairs in self.config.markets.items():
+            for pair in pairs:
+                if pair not in [ex.config.trading_pair for ex in self.executors_info if ex.config.connector_name == connector_name]:
+                    self.market_data_provider.initialize_candles_feed(pair)
 
 
     def stop_actions_proposal(self) -> List[ExecutorAction]:
@@ -128,11 +160,11 @@ class GridControllerBase(ControllerBase):
         return stop_actions
 
     def executors_to_stop(self):
-        # todo
         executors_to_stop = []
         for ex in self.executors_info:
-            if ex.config.markets not in self.config.markets:
+            if ex.config.trading_pair not in self.config.markets[ex.config.connector_name]:
                 executors_to_stop.append(ex)
+                self._open.remove(ex.config.trading_pair)
 
         return [StopExecutorAction(
             controller_id=self.config.id,
@@ -145,37 +177,7 @@ class GridControllerBase(ControllerBase):
         to True. This will be only available for those variables that don't interrupt the bot operation.
         """
         for field in self.config.__fields__.values():
-            client_data = field.field_info.extra.get("client_data")
-            if client_data and client_data.is_updatable:
-                setattr(self.config, field.name, getattr(new_config, field.name))
+            setattr(self.config, field.name, getattr(new_config, field.name))
+        ## 在这里切换币对？
+        self.change_candles()
 
-    # ===============================================================================
-    def can_create_executor(self, signal: int) -> bool:
-        """
-        Check if an executor can be created based on the signal, the quantity of active executors and the cooldown time.
-        """
-        active_executors_by_signal_side = self.filter_executors(
-            executors=self.executors_info,
-            filter_func=lambda x: x.is_active and (x.side == TradeType.BUY if signal > 0 else TradeType.SELL))
-        max_timestamp = max([executor.timestamp for executor in active_executors_by_signal_side], default=0)
-        active_executors_condition = len(active_executors_by_signal_side) < self.config.max_executors_per_side
-        cooldown_condition = time.time() - max_timestamp > self.config.cooldown_time
-        return active_executors_condition and cooldown_condition
-
-
-
-    def get_executor_config(self, trade_type: TradeType, price: Decimal, amount: Decimal):
-        """
-        Get the executor config based on the trade_type, price and amount. This method can be overridden by the
-        subclasses if required.
-        """
-        return PositionExecutorConfig(
-            timestamp=time.time(),
-            connector_name=self.config.connector_name,
-            trading_pair=self.config.trading_pair,
-            side=trade_type,
-            entry_price=price,
-            amount=amount,
-            triple_barrier_config=self.config.triple_barrier_config,
-            leverage=self.config.leverage,
-        )

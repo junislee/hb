@@ -31,8 +31,8 @@ class TrailingGridExecutor(ExecutorBase):
             cls._logger = logging.getLogger(__name__)
         return cls._logger
 
-    def __init__(self, strategy: ScriptStrategyBase, config: TrailingGridExecutorConfig,
-                 update_interval: float = 1.0, max_retries: int = 10):
+    def __init__(self, strategy: ScriptStrategyBase, config: TrailingGridExecutorConfig, 
+                 update_interval: float = 1.0, max_retries: int = 10 ):
         """
         Initialize the PositionExecutor instance.
 
@@ -57,6 +57,7 @@ class TrailingGridExecutor(ExecutorBase):
         self._max_retries = max_retries
         self._last_executor_time = 0
 
+        self.stop_queue = self.config.stop_queue
         # 保存信号状态变量
         self._signal: int = 1
         self._signal_update: bool = True
@@ -518,6 +519,7 @@ class TrailingGridExecutor(ExecutorBase):
             self.place_close_order_and_cancel_open_orders()
             self._current_retries += 1
         await asyncio.sleep(1.0)
+        await self.stop_queue.put(self.config.trading_pair)
 
     def close_execution_by(self, close_type):
         self.close_type = close_type

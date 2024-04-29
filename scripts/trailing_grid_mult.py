@@ -53,7 +53,7 @@ class TrailingGridMultPairs(StrategyV3Base):
         这里的逻辑是, 针对每一个新的币对, 运行对应参数的trailing_grid executor
         (对应选币逻辑、多空对冲逻辑、以及参数实时更新)
         注意, 信号+网格并不在这里运行, 而是从这里传入信号函数给信号网格executor
-        网格executor实现了网格变种，通过配置TrailingGridExecutorConfig不同参数
+        网格executor实现了网格变种, 通过配置TrailingGridExecutorConfig不同参数
         选择多、空、中性、带底仓自平衡、trailing等
         '''
         create_actions = []

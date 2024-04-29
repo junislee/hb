@@ -29,24 +29,7 @@ class GridConfig(GridControllerConfigBase):
         )
     }
 
-
-
-    # As this controller is a simple version of the PMM, we are not using the candles feed
-    candles_config: List[CandlesConfig] = Field(default=[], client_data=ClientFieldData(prompt_on_new=False))
-    top_order_refresh_time: Optional[float] = Field(
-        default=None,
-        client_data=ClientFieldData(
-            is_updatable=True,
-            prompt_on_new=False))
-
-
-class GridController(GridControllerBase):
-    def __init__(self, config: GridConfig, *args, **kwargs):
-        super().__init__(config, *args, **kwargs)
-        self.config = config
-
-
-    def grid_siganl(self, df=None, k: int = 0, d: int = 0):
+    def gen_executor_signal(df=None, k: int = 0, d: int = 0):
         '''
         这里构建网格叠加的信号，如果没有具体则是常规网格
         '''
@@ -79,11 +62,14 @@ class GridController(GridControllerBase):
         return df.iloc[-2]
 
 
+class GridController(GridControllerBase):
+    def __init__(self, config: GridConfig, *args, **kwargs):
+        super().__init__(config, *args, **kwargs)
+        self.config = config
 
-
-
-
-
+    def get_signal(self) -> int:
+        ## controller内部执行逻辑
+        return 1
 
     # ===================================================================================================================
     def first_level_refresh_condition(self, executor):
