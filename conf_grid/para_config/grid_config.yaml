@@ -1,0 +1,17 @@
+DOGE-USDT: 
+  grid_max: 100
+  grid_open: 0.02
+  grid_close: 0.01
+  mart_open: 0.25
+  interval: 1m
+  max_records: 30
+  side: BUY
+
+ONG-USDT:
+  grid_max: 100
+  grid_open: 0.02
+  grid_close: 0.01
+  mart_open: 0.08
+  interval: 1m
+  max_records: 30
+  side: BUY

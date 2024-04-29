@@ -14,6 +14,8 @@ from hummingbot.smart_components.executors.twap_executor.data_types import TWAPE
 from hummingbot.smart_components.executors.twap_executor.twap_executor import TWAPExecutor
 from hummingbot.smart_components.executors.xemm_executor.data_types import XEMMExecutorConfig
 from hummingbot.smart_components.executors.xemm_executor.xemm_executor import XEMMExecutor
+from hummingbot.smart_components.executors.trailing_grid_executor.data_types import TrailingGridExecutorConfig
+from hummingbot.smart_components.executors.trailing_grid_executor.trailing_grid_executor import TrailingGridExecutor
 from hummingbot.smart_components.models.executor_actions import (
     CreateExecutorAction,
     ExecutorAction,
@@ -96,6 +98,8 @@ class ExecutorOrchestrator:
             executor = ArbitrageExecutor(self.strategy, executor_config, self.executors_update_interval)
         elif isinstance(executor_config, TWAPExecutorConfig):
             executor = TWAPExecutor(self.strategy, executor_config, self.executors_update_interval)
+        elif isinstance(executor_config, TrailingGridExecutorConfig):
+            executor = TrailingGridExecutor(self.strategy, executor_config, self.executors_update_interval)
         elif isinstance(executor_config, XEMMExecutorConfig):
             executor = XEMMExecutor(self.strategy, executor_config, self.executors_update_interval)
         else:

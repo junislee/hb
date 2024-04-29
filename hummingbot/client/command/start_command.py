@@ -26,10 +26,11 @@ from hummingbot.exceptions import InvalidScriptModule, OracleRateUnavailable
 from hummingbot.strategy.directional_strategy_base import DirectionalStrategyBase
 from hummingbot.strategy.script_strategy_base import ScriptStrategyBase
 from hummingbot.strategy.strategy_v2_base import StrategyV2Base, StrategyV2ConfigBase
+from hummingbot.strategy.strategy_v2_base_trailing_grid import StrategyV2ConfigTrailing, StrategyV2Trailing
+from hummingbot.strategy.strategy_v3_base import StrategyV3Base
 
 if TYPE_CHECKING:
     from hummingbot.client.hummingbot_application import HummingbotApplication  # noqa: F401
-
 
 GATEWAY_READY_TIMEOUT = 300  # seconds
 
@@ -93,8 +94,9 @@ class StartCommand(GatewayChainApiManager):
                 try:
                     await asyncio.wait_for(self._gateway_monitor.ready_event.wait(), timeout=GATEWAY_READY_TIMEOUT)
                 except asyncio.TimeoutError:
-                    self.notify(f"TimeoutError waiting for gateway service to go online... Please ensure Gateway is configured correctly."
-                                f"Unable to start strategy {self.strategy_name}. ")
+                    self.notify(
+                        f"TimeoutError waiting for gateway service to go online... Please ensure Gateway is configured correctly."
+                        f"Unable to start strategy {self.strategy_name}. ")
                     self._in_start_check = False
                     self.strategy_name = None
                     self.strategy_file_name = None
@@ -148,7 +150,8 @@ class StartCommand(GatewayChainApiManager):
                     ]
 
                     # check for node URL
-                    await self._test_node_url_from_gateway_config(connector_details['chain'], connector_details['network'])
+                    await self._test_node_url_from_gateway_config(connector_details['chain'],
+                                                                  connector_details['network'])
 
                     await GatewayCommand.update_exchange_balances(self, connector, self.client_config_map)
                     balances: List[str] = [
@@ -215,15 +218,29 @@ class StartCommand(GatewayChainApiManager):
             script_class = next((member for member_name, member in inspect.getmembers(script_module)
                                  if inspect.isclass(member) and
                                  issubclass(member, ScriptStrategyBase) and
-                                 member not in [ScriptStrategyBase, DirectionalStrategyBase, StrategyV2Base]))
+                                 member not in [ScriptStrategyBase, DirectionalStrategyBase, StrategyV2Base,
+                                                StrategyV2Trailing, StrategyV3Base]))
         except StopIteration:
             raise InvalidScriptModule(f"The module {script_name} does not contain any subclass of ScriptStrategyBase")
         if self.strategy_name != self.strategy_file_name:
             try:
                 config_class = next((member for member_name, member in inspect.getmembers(script_module)
-                                    if inspect.isclass(member) and
-                                    issubclass(member, BaseClientModel) and member not in [BaseClientModel, StrategyV2ConfigBase]))
+                                     if inspect.isclass(member) and
+                                     issubclass(member, BaseClientModel) and member not in [BaseClientModel,
+                                                                                            StrategyV2ConfigBase]))
                 config = config_class(**self.load_script_yaml_config(config_file_path=self.strategy_file_name))
+                script_class.init_markets(config)
+            except StopIteration:
+                raise InvalidScriptModule(f"The module {script_name} does not contain any subclass of BaseModel")
+
+        else:
+            try:
+                config_class = next((member for member_name, member in inspect.getmembers(script_module)
+                                     if inspect.isclass(member) and
+                                     issubclass(member, BaseClientModel) and member not in [BaseClientModel,
+                                                                                            StrategyV2ConfigBase,
+                                                                                            StrategyV2ConfigTrailing]))
+                config = config_class()
                 script_class.init_markets(config)
             except StopIteration:
                 raise InvalidScriptModule(f"The module {script_name} does not contain any subclass of BaseModel")

@@ -60,6 +60,11 @@ GATEAWAY_CLIENT_KEY_PATH = DEFAULT_GATEWAY_CERTS_PATH / "client_key.pem"
 CONNECTOR_SUBMODULES_THAT_ARE_NOT_CEX_TYPES = ["test_support", "utilities", "gateway"]
 
 
+# 这里增加我们自己的配置文件路径
+CONF_GRID_DIR_PATH = root_path() / "conf_grid"
+CONTROLLERS_CONF_GRID_DIR_PATH = CONF_GRID_DIR_PATH / "controllers"
+PARAMETERS_CONF_GRID_DIR_PATH = CONF_GRID_DIR_PATH / "para_config"
+
 class ConnectorType(Enum):
     """
     The types of exchanges that hummingbot client can communicate with.
