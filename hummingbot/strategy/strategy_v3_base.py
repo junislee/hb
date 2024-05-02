@@ -15,7 +15,6 @@ from hummingbot.client.ui.interface_utils import format_df_for_printout
 from hummingbot.connector.connector_base import ConnectorBase
 from hummingbot.core.data_type.common import PositionMode
 from hummingbot.core.event.events import ExecutorEvent
-from hummingbot.core.pubsub import PubSub
 from hummingbot.connector.markets_recorder import MarketsRecorder
 from hummingbot.data_feed.candles_feed.candles_factory import CandlesConfig
 from hummingbot.data_feed.market_data_provider import MarketDataProvider
@@ -41,16 +40,23 @@ class StrategyV3Config(BaseClientModel):
     """
     Base class for version 2 strategy configurations.
     """
+
+    '''
     markets: Dict[str, Set[str]] = {
         "binance_perpetual": set(
             ["BTC-USDT"]
         )
+    }
+    '''
+    markets: Dict[str, Set[str]] = {
     }
     controller_type: str 
 
     controller_name: str 
 
     para_config: str
+
+    position_mode = PositionMode.HEDGE
 
     controllers_config: List[str] = Field(
         default=None,
@@ -126,7 +132,6 @@ class StrategyV3Base(ScriptStrategyBase):
     """
     V2StrategyBase is a base class for strategies that use the new smart components architecture.
     """
-    pubsub: PubSub = PubSub()
     markets: Dict[str, Set[str]]
     _last_config_update_ts: float = 0
     closed_executors_buffer: int = 5
@@ -161,6 +166,8 @@ class StrategyV3Base(ScriptStrategyBase):
         self.controllers: Dict[str, ControllerBase] = {}
         self.initialize_controllers()
 
+        self.loop = asyncio.get_event_loop()
+
     def initialize_controllers(self):
         """
         Initialize the controllers based on the provided configuration.
@@ -171,9 +178,15 @@ class StrategyV3Base(ScriptStrategyBase):
             MarketsRecorder.get_instance().store_controller_config(controller_config)
 
 
+
     def add_controller(self, config: ControllerConfigBase):
         try:
             # todo
+            for connector_name, connector in self.connectors.items():
+                if self.is_perpetual(connector_name):
+                    connector.set_position_mode(self.config.position_mode)
+                    for trading_pair in config.markets[connector_name]:
+                        connector.set_leverage(trading_pair, config.params[trading_pair]['leverage'])
             controller = config.get_controller_class()(config, self.market_data_provider, self.actions_queue)
             controller.start()
             ##  又改版了，服
@@ -190,7 +203,9 @@ class StrategyV3Base(ScriptStrategyBase):
             controllers_configs = self.config.load_controller_configs()
             for controller_config in controllers_configs:
                 if controller_config.id in self.controllers:
-                    self.controllers[controller_config.id].update_config(controller_config)
+                    ## 这样是否能够异步调用成功？
+                    if not self.loop.is_running():
+                        self.loop.run_until_complete(self.controllers[controller_config.id].update_config(controller_config))
                 else:
                     self.add_controller(controller_config)
 
@@ -201,12 +216,17 @@ class StrategyV3Base(ScriptStrategyBase):
         while True:
             try:
                 actions = await self.actions_queue.get()
-                self.executor_orchestrator.execute_actions(actions)
-                self.update_executors_info()
-                controller_id = actions[0].controller_id
-                controller = self.controllers.get(controller_id)
-                controller.executors_info = self.executors_info.get(controller_id, [])
-                controller.executors_update_event.set()
+                if isinstance(actions, ExecutorInfo):
+                    self.executor_orchestrator.execute_actions(actions)
+                    self.update_executors_info()
+                    controller_id = actions[0].controller_id
+                    controller = self.controllers.get(controller_id)
+                    controller.executors_info = self.executors_info.get(controller_id, [])
+                    controller.executors_update_event.set()
+                ## 这里更新杠杆率
+                elif isinstance(actions, tuple) and "-" in actions:
+                    for connector_name, connector in self.connectors.items():
+                        connector.set_leverage(actions[0], actions[1])
             except Exception as e:
                 self.logger().error(f"Error executing action: {e}", exc_info=True)
 
@@ -229,6 +249,7 @@ class StrategyV3Base(ScriptStrategyBase):
         self.executor_orchestrator.stop()
         self.market_data_provider.stop()
         self.listen_to_executor_actions_task.cancel()
+        self.loop.close()
         for controller in self.controllers.values():
             controller.stop()
 

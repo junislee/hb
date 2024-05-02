@@ -11,7 +11,7 @@ from hummingbot.core.clock import Clock
 from hummingbot.core.data_type.common import OrderType, PositionMode, PriceType, TradeType
 from hummingbot.data_feed.candles_feed.candles_factory import CandlesConfig
 from hummingbot.smart_components.executors.trailing_grid_executor.data_types import (
-    TrailingGridExecutorConfig, TrailingGridConfig
+    TrailingGridExecutorConfig
 )
 from hummingbot.smart_components.models.executor_actions import CreateExecutorAction, StopExecutorAction
 from hummingbot.strategy.strategy_v3_base import StrategyV3Config, StrategyV3Base
@@ -28,6 +28,7 @@ class StrategyControllersCompo(StrategyV3Config):
     para_config: str = "grid_config.yaml"
 
     config_update_interval: int = 60
+
 
 
 
@@ -74,6 +75,4 @@ class TrailingGridMultPairs(StrategyV3Base):
             for connector_name, connector in self.connectors.items():
                 if self.is_perpetual(connector_name):
                     connector.set_position_mode(self.config.position_mode)
-                    for trading_pair in self.market_data_provider.get_trading_pairs(connector_name):
-                        connector.set_leverage(trading_pair, self.config.leverage)
             self.account_config_set = True

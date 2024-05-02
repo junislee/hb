@@ -23,3 +23,16 @@ ONG-USDT:
   signal_func_args:
     k: 17
     d: 4
+
+ENA-USDT:
+  leverage: 10
+  grid_max: 100
+  grid_open: 0.02
+  grid_close: 0.01
+  mart_open: 0.08
+  interval: 1m
+  max_records: 30
+  side: BUY
+  signal_func_args:
+    k: 17
+    d: 4

@@ -1,6 +1,10 @@
-import time
-from decimal import Decimal
+
 from typing import Dict, List, Optional, Set
+import time
+from datetime import datetime
+from decimal import Decimal
+from typing import List, Optional, Dict, Set
+import pandas_ta as ta
 
 from pydantic import Field, validator
 import asyncio
@@ -33,13 +37,6 @@ class GridControllerConfigBase(ControllerConfigBase):
     ## 策略参数存储
     params: Dict[str, Dict] = {}
 
-    @staticmethod
-    def gen_executor_signal():
-        """
-        这个方法需要实现, 传递给executor
-        """
-        raise NotImplementedError
-
     ## 将str side转换为对应内部数据格式
     @validator('params', pre=True, always=True)
     def parse_params_config(cls, v) -> Dict[str, Dict]:
@@ -66,7 +63,37 @@ class GridControllerConfigBase(ControllerConfigBase):
                     markets[connector_name].add(pair)
         return markets
 
+def gen_executor_signal(df=None, k: int = 0, d: int = 0):
+    '''
+    这里构建网格叠加的信号，如果没有具体则是常规网格
+    '''
+    df['timestamp'] = df['timestamp'].apply(lambda x: datetime.fromtimestamp(x / 1000.0))
+    df = df.sort_values(by='timestamp')
 
+    ll = df['low'].rolling(window=k).min()
+    hh = df['high'].rolling(window=k).max()
+    diff = hh - ll
+    rdiff = df['close'] - (hh + ll) / 2
+    avgrel = ta.ema(ta.ema(rdiff, length=d), d)
+    avgdiff = ta.ema(ta.ema(diff, length=d), d)
+
+    df['ll'] = ll
+    df['hh'] = hh
+    df['avgrel'] = avgrel
+    df['avgdiff'] = avgdiff
+
+    df['SMI'] = ((avgrel * 100) / (avgdiff / 2))
+    df['SMIsignal'] = ta.ema(df['SMI'], length=d)
+
+    df['long'] = ta.cross(df['SMI'], df['SMIsignal'], above=True)
+    df['short'] = ta.cross(df['SMI'], df['SMIsignal'], above=False)
+    df['signal'] = 0  # 初始化 signal 列为0
+
+    # 根据条件为 signal 赋值
+    df.loc[(df['long'] == 1) & (df['short'] == 0), 'signal'] = 1
+    df.loc[(df['long'] == 0) & (df['short'] == 0), 'signal'] = 0
+    df.loc[(df['long'] == 0) & (df['short'] == 1), 'signal'] = -1
+    return df.iloc[-2]
 
 class GridControllerBase(ControllerBase):
     """
@@ -114,6 +141,7 @@ class GridControllerBase(ControllerBase):
                 ## 在这里收到executor shutdown事件后，关闭对应pair的数据
                 pair = await self.stop_queue.get()
                 self.market_data_provider.candles_feeds[pair].stop()
+                asyncio.sleep(5)
             except Exception as e:
                 self.logger().error(f"Error executing action: {e}", exc_info=True)
 
@@ -130,25 +158,25 @@ class GridControllerBase(ControllerBase):
                     )
                     create_actions.append(CreateExecutorAction(
                         executor_config=TrailingGridExecutorConfig(
+                            timestamp=float(0.0),
                             trading_pair=trading_pair,
                             connector_name=connector_name,
-                            signal_func=self.config.gen_executor_signal,
+                            signal_func=gen_executor_signal,
                             signal_func_args=(),
-                            signal_func_kwargs=self.config[trading_pair]["signal_func_args"],
                             stop_queue=self.stop_queue,
-                            **self.config[trading_pair]
+                            params=self.config.params
                         )))
                     self._open.append(trading_pair)
         return create_actions
 
 
-    def change_candles(self):
-        # todo
+    async def change_candles(self):
         ## 启动需要的candles
         for connector_name, pairs in self.config.markets.items():
             for pair in pairs:
                 if pair not in [ex.config.trading_pair for ex in self.executors_info if ex.config.connector_name == connector_name]:
                     self.market_data_provider.initialize_candles_feed(pair)
+                    await self.actions_queue.put((pair, self.config[pair]["leverage"]))
 
 
     def stop_actions_proposal(self) -> List[ExecutorAction]:
@@ -170,8 +198,8 @@ class GridControllerBase(ControllerBase):
             controller_id=self.config.id,
             executor_id=executor.id) for executor in executors_to_stop]
 
-    # todo
-    def update_config(self, new_config: ControllerConfigBase):
+
+    async def update_config(self, new_config: ControllerConfigBase):
         """
         Update the controller configuration. With the variables that in the client_data have the is_updatable flag set
         to True. This will be only available for those variables that don't interrupt the bot operation.
@@ -179,5 +207,5 @@ class GridControllerBase(ControllerBase):
         for field in self.config.__fields__.values():
             setattr(self.config, field.name, getattr(new_config, field.name))
         ## 在这里切换币对？
-        self.change_candles()
+        await self.change_candles()
 

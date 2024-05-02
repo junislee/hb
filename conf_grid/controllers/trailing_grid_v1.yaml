@@ -2,7 +2,7 @@ id: grid_1
 
 markets: 
   binance_perpetual:
-    - DOGE-USDT
-    - ONG-USDT
+    - ENA-USDT
+
 
 params: {}
