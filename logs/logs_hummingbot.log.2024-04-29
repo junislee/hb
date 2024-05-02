@@ -1,0 +1,109 @@
+2024-04-27 14:59:47,977 - 178489 - hummingbot.client.hummingbot_application - ERROR - MQTT is already stopped!
+2024-04-27 15:22:18,421 - 182584 - hummingbot.core.utils.async_utils - ERROR - Unhandled error in background task: Non-hexadecimal digit found
+Traceback (most recent call last):
+  File "/root/hummingbot/hummingbot/core/utils/async_utils.py", line 9, in safe_wrapper
+    return await c
+  File "/root/hummingbot/hummingbot/core/utils/async_call_scheduler.py", line 127, in call_async
+    return await self.schedule_async_call(coro, timeout_seconds, app_warning_msg=app_warning_msg)
+  File "/root/hummingbot/hummingbot/core/utils/async_call_scheduler.py", line 116, in schedule_async_call
+    return await fut
+  File "/root/hummingbot/hummingbot/core/utils/async_call_scheduler.py", line 79, in _coro_scheduler
+    fut.set_result(await coro)
+  File "/root/miniconda3/envs/hummingbot/lib/python3.10/concurrent/futures/thread.py", line 58, in run
+    result = self.fn(*self.args, **self.kwargs)
+  File "/root/hummingbot/hummingbot/client/config/security.py", line 65, in decrypt_all
+    cls.decrypt_connector_config(file)
+  File "/root/hummingbot/hummingbot/client/config/security.py", line 71, in decrypt_connector_config
+    cls._secure_configs[connector_name] = load_connector_config_map_from_file(file_path)
+  File "/root/hummingbot/hummingbot/client/config/config_helpers.py", line 668, in load_connector_config_map_from_file
+    _load_yml_data_into_map(config_data, config_map)
+  File "/root/hummingbot/hummingbot/client/config/config_helpers.py", line 750, in _load_yml_data_into_map
+    config_validation_errors = cm.validate_model()  # try coercing values to appropriate type
+  File "/root/hummingbot/hummingbot/client/config/config_helpers.py", line 199, in validate_model
+    self.decrypt_all_secure_data()
+  File "/root/hummingbot/hummingbot/client/config/config_helpers.py", line 237, in decrypt_all_secure_data
+    decrypted_value = Security.secrets_manager.decrypt_secret_value(attr=traversal_item.attr, value=value)
+  File "/root/hummingbot/hummingbot/client/config/config_crypt.py", line 59, in decrypt_secret_value
+    value = binascii.unhexlify(value)
+binascii.Error: Non-hexadecimal digit found
+2024-04-27 15:39:52,042 - 188340 - hummingbot.core.utils.async_utils - ERROR - Unhandled error in background task: Non-hexadecimal digit found
+Traceback (most recent call last):
+  File "/root/hummingbot/hummingbot/core/utils/async_utils.py", line 9, in safe_wrapper
+    return await c
+  File "/root/hummingbot/hummingbot/core/utils/async_call_scheduler.py", line 127, in call_async
+    return await self.schedule_async_call(coro, timeout_seconds, app_warning_msg=app_warning_msg)
+  File "/root/hummingbot/hummingbot/core/utils/async_call_scheduler.py", line 116, in schedule_async_call
+    return await fut
+  File "/root/hummingbot/hummingbot/core/utils/async_call_scheduler.py", line 79, in _coro_scheduler
+    fut.set_result(await coro)
+  File "/root/miniconda3/envs/hummingbot/lib/python3.10/concurrent/futures/thread.py", line 58, in run
+    result = self.fn(*self.args, **self.kwargs)
+  File "/root/hummingbot/hummingbot/client/config/security.py", line 65, in decrypt_all
+    cls.decrypt_connector_config(file)
+  File "/root/hummingbot/hummingbot/client/config/security.py", line 71, in decrypt_connector_config
+    cls._secure_configs[connector_name] = load_connector_config_map_from_file(file_path)
+  File "/root/hummingbot/hummingbot/client/config/config_helpers.py", line 668, in load_connector_config_map_from_file
+    _load_yml_data_into_map(config_data, config_map)
+  File "/root/hummingbot/hummingbot/client/config/config_helpers.py", line 750, in _load_yml_data_into_map
+    config_validation_errors = cm.validate_model()  # try coercing values to appropriate type
+  File "/root/hummingbot/hummingbot/client/config/config_helpers.py", line 199, in validate_model
+    self.decrypt_all_secure_data()
+  File "/root/hummingbot/hummingbot/client/config/config_helpers.py", line 237, in decrypt_all_secure_data
+    decrypted_value = Security.secrets_manager.decrypt_secret_value(attr=traversal_item.attr, value=value)
+  File "/root/hummingbot/hummingbot/client/config/config_crypt.py", line 59, in decrypt_secret_value
+    value = binascii.unhexlify(value)
+binascii.Error: Non-hexadecimal digit found
+2024-04-28 08:09:35,763 - 211342 - hummingbot.core.utils.async_utils - ERROR - Unhandled error in background task: Non-hexadecimal digit found
+Traceback (most recent call last):
+  File "/root/hummingbot/hummingbot/core/utils/async_utils.py", line 9, in safe_wrapper
+    return await c
+  File "/root/hummingbot/hummingbot/core/utils/async_call_scheduler.py", line 127, in call_async
+    return await self.schedule_async_call(coro, timeout_seconds, app_warning_msg=app_warning_msg)
+  File "/root/hummingbot/hummingbot/core/utils/async_call_scheduler.py", line 116, in schedule_async_call
+    return await fut
+  File "/root/hummingbot/hummingbot/core/utils/async_call_scheduler.py", line 79, in _coro_scheduler
+    fut.set_result(await coro)
+  File "/root/miniconda3/envs/hummingbot/lib/python3.10/concurrent/futures/thread.py", line 58, in run
+    result = self.fn(*self.args, **self.kwargs)
+  File "/root/hummingbot/hummingbot/client/config/security.py", line 65, in decrypt_all
+    cls.decrypt_connector_config(file)
+  File "/root/hummingbot/hummingbot/client/config/security.py", line 71, in decrypt_connector_config
+    cls._secure_configs[connector_name] = load_connector_config_map_from_file(file_path)
+  File "/root/hummingbot/hummingbot/client/config/config_helpers.py", line 668, in load_connector_config_map_from_file
+    _load_yml_data_into_map(config_data, config_map)
+  File "/root/hummingbot/hummingbot/client/config/config_helpers.py", line 750, in _load_yml_data_into_map
+    config_validation_errors = cm.validate_model()  # try coercing values to appropriate type
+  File "/root/hummingbot/hummingbot/client/config/config_helpers.py", line 199, in validate_model
+    self.decrypt_all_secure_data()
+  File "/root/hummingbot/hummingbot/client/config/config_helpers.py", line 237, in decrypt_all_secure_data
+    decrypted_value = Security.secrets_manager.decrypt_secret_value(attr=traversal_item.attr, value=value)
+  File "/root/hummingbot/hummingbot/client/config/config_crypt.py", line 59, in decrypt_secret_value
+    value = binascii.unhexlify(value)
+binascii.Error: Non-hexadecimal digit found
+2024-04-28 16:57:43,237 - 273679 - hummingbot.core.utils.async_utils - ERROR - Unhandled error in background task: Non-hexadecimal digit found
+Traceback (most recent call last):
+  File "/root/hummingbot/hummingbot/core/utils/async_utils.py", line 9, in safe_wrapper
+    return await c
+  File "/root/hummingbot/hummingbot/core/utils/async_call_scheduler.py", line 127, in call_async
+    return await self.schedule_async_call(coro, timeout_seconds, app_warning_msg=app_warning_msg)
+  File "/root/hummingbot/hummingbot/core/utils/async_call_scheduler.py", line 116, in schedule_async_call
+    return await fut
+  File "/root/hummingbot/hummingbot/core/utils/async_call_scheduler.py", line 79, in _coro_scheduler
+    fut.set_result(await coro)
+  File "/root/miniconda3/envs/hummingbot/lib/python3.10/concurrent/futures/thread.py", line 58, in run
+    result = self.fn(*self.args, **self.kwargs)
+  File "/root/hummingbot/hummingbot/client/config/security.py", line 65, in decrypt_all
+    cls.decrypt_connector_config(file)
+  File "/root/hummingbot/hummingbot/client/config/security.py", line 71, in decrypt_connector_config
+    cls._secure_configs[connector_name] = load_connector_config_map_from_file(file_path)
+  File "/root/hummingbot/hummingbot/client/config/config_helpers.py", line 668, in load_connector_config_map_from_file
+    _load_yml_data_into_map(config_data, config_map)
+  File "/root/hummingbot/hummingbot/client/config/config_helpers.py", line 750, in _load_yml_data_into_map
+    config_validation_errors = cm.validate_model()  # try coercing values to appropriate type
+  File "/root/hummingbot/hummingbot/client/config/config_helpers.py", line 199, in validate_model
+    self.decrypt_all_secure_data()
+  File "/root/hummingbot/hummingbot/client/config/config_helpers.py", line 237, in decrypt_all_secure_data
+    decrypted_value = Security.secrets_manager.decrypt_secret_value(attr=traversal_item.attr, value=value)
+  File "/root/hummingbot/hummingbot/client/config/config_crypt.py", line 59, in decrypt_secret_value
+    value = binascii.unhexlify(value)
+binascii.Error: Non-hexadecimal digit found
