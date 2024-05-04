@@ -4,6 +4,7 @@ from typing import Dict, List, Optional, Set
 from datetime import datetime
 import pandas_ta as ta  # noqa: F401
 from pydantic import Field, validator
+import time
 
 from hummingbot.client.config.config_data_types import ClientFieldData
 from hummingbot.connector.connector_base import ConnectorBase
@@ -11,7 +12,7 @@ from hummingbot.core.clock import Clock
 from hummingbot.core.data_type.common import OrderType, PositionMode, PriceType, TradeType
 from hummingbot.data_feed.candles_feed.candles_factory import CandlesConfig
 from hummingbot.smart_components.executors.trailing_grid_executor.data_types import (
-    TrailingGridExecutorConfig, TrailingGridConfig
+    TrailingGridExecutorConfig
 )
 from hummingbot.smart_components.models.executor_actions import CreateExecutorAction, StopExecutorAction
 from hummingbot.strategy.strategy_v2_base_trailing_grid import StrategyV2ConfigTrailing, StrategyV2Trailing
@@ -21,7 +22,7 @@ class TrailingGridMultPairsConfig(StrategyV2ConfigTrailing):
 
     markets: Dict[str, Set[str]] = {
         "binance_perpetual": set(
-            ["WIF-USDT", "DOGE-USDT", "ONG-USDT"]
+            ["ETH-USDT", "ORDI-USDT", "XRP-USDT"]
         )
     }
 
@@ -48,12 +49,10 @@ class TrailingGridMultPairsConfig(StrategyV2ConfigTrailing):
     k: int = 17
     d: int = 4
 
-    grid_max=100,
-    grid_open=0.02,
-    grid_close=0.01,
-    mart_open=0.10,
-    open_order_type=OrderType.MARKET,
-    take_profit_order_type=OrderType.MARKET
+    grid_max: int = 100
+    grid_open: Decimal = Decimal(0.02)
+    grid_close: Decimal = Decimal(0.01)
+    mart_open: Decimal = Decimal(0.10)
 
 
 
@@ -149,8 +148,6 @@ class TrailingGridMultPairs(StrategyV2Trailing):
                             grid_open=self.config.grid_open,
                             grid_close=self.config.grid_close,
                             mart_open=self.config.mart_open,
-                            open_order_type=self.config.open_order_type,
-                            take_profit_order_type=self.config.take_profit_order_type,
                             interval=self.config.interval,
                             max_records=self.max_records,
                             signal_func=grid_siganl,

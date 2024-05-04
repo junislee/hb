@@ -13,7 +13,7 @@ from hummingbot.strategy.script_strategy_base import ScriptStrategyBase
 class DownloadTradesAndOrderBookSnapshots(ScriptStrategyBase):
     exchange = os.getenv("EXCHANGE", "binance_paper_trade")
     trading_pairs = os.getenv("TRADING_PAIRS", "ETH-USDT,BTC-USDT")
-    depth = int(os.getenv("DEPTH", 50))
+    depth = int(os.getenv("DEPTH", 500))
     trading_pairs = [pair for pair in trading_pairs.split(",")]
     last_dump_timestamp = 0
     time_between_csv_dumps = 10

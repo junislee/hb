@@ -233,7 +233,7 @@ class StartCommand(GatewayChainApiManager):
             except StopIteration:
                 raise InvalidScriptModule(f"The module {script_name} does not contain any subclass of BaseModel")
 
-        else:
+        elif self.strategy_name == "trailing_grid_mult" or self.strategy_name == "trailing_grid_mult_base":
             try:
                 config_class = next((member for member_name, member in inspect.getmembers(script_module)
                                      if inspect.isclass(member) and

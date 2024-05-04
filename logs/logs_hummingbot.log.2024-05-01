@@ -1,0 +1,243 @@
+2024-05-01 13:29:45,646 - 367790 - hummingbot.core.utils.async_utils - ERROR - Unhandled error in background task: Non-hexadecimal digit found
+Traceback (most recent call last):
+  File "/root/hb_quant/hummingbot/core/utils/async_utils.py", line 9, in safe_wrapper
+    return await c
+  File "/root/hb_quant/hummingbot/core/utils/async_call_scheduler.py", line 127, in call_async
+    return await self.schedule_async_call(coro, timeout_seconds, app_warning_msg=app_warning_msg)
+  File "/root/hb_quant/hummingbot/core/utils/async_call_scheduler.py", line 116, in schedule_async_call
+    return await fut
+  File "/root/hb_quant/hummingbot/core/utils/async_call_scheduler.py", line 79, in _coro_scheduler
+    fut.set_result(await coro)
+  File "/root/miniconda3/envs/hummingbot/lib/python3.10/concurrent/futures/thread.py", line 58, in run
+    result = self.fn(*self.args, **self.kwargs)
+  File "/root/hb_quant/hummingbot/client/config/security.py", line 65, in decrypt_all
+    cls.decrypt_connector_config(file)
+  File "/root/hb_quant/hummingbot/client/config/security.py", line 71, in decrypt_connector_config
+    cls._secure_configs[connector_name] = load_connector_config_map_from_file(file_path)
+  File "/root/hb_quant/hummingbot/client/config/config_helpers.py", line 668, in load_connector_config_map_from_file
+    _load_yml_data_into_map(config_data, config_map)
+  File "/root/hb_quant/hummingbot/client/config/config_helpers.py", line 750, in _load_yml_data_into_map
+    config_validation_errors = cm.validate_model()  # try coercing values to appropriate type
+  File "/root/hb_quant/hummingbot/client/config/config_helpers.py", line 199, in validate_model
+    self.decrypt_all_secure_data()
+  File "/root/hb_quant/hummingbot/client/config/config_helpers.py", line 237, in decrypt_all_secure_data
+    decrypted_value = Security.secrets_manager.decrypt_secret_value(attr=traversal_item.attr, value=value)
+  File "/root/hb_quant/hummingbot/client/config/config_crypt.py", line 59, in decrypt_secret_value
+    value = binascii.unhexlify(value)
+binascii.Error: Non-hexadecimal digit found
+2024-05-01 16:10:23,618 - 428442 - hummingbot.core.utils.async_utils - ERROR - Unhandled error in background task: Non-hexadecimal digit found
+Traceback (most recent call last):
+  File "/root/hb_quant/hummingbot/core/utils/async_utils.py", line 9, in safe_wrapper
+    return await c
+  File "/root/hb_quant/hummingbot/core/utils/async_call_scheduler.py", line 127, in call_async
+    return await self.schedule_async_call(coro, timeout_seconds, app_warning_msg=app_warning_msg)
+  File "/root/hb_quant/hummingbot/core/utils/async_call_scheduler.py", line 116, in schedule_async_call
+    return await fut
+  File "/root/hb_quant/hummingbot/core/utils/async_call_scheduler.py", line 79, in _coro_scheduler
+    fut.set_result(await coro)
+  File "/root/miniconda3/envs/hummingbot/lib/python3.10/concurrent/futures/thread.py", line 58, in run
+    result = self.fn(*self.args, **self.kwargs)
+  File "/root/hb_quant/hummingbot/client/config/security.py", line 65, in decrypt_all
+    cls.decrypt_connector_config(file)
+  File "/root/hb_quant/hummingbot/client/config/security.py", line 71, in decrypt_connector_config
+    cls._secure_configs[connector_name] = load_connector_config_map_from_file(file_path)
+  File "/root/hb_quant/hummingbot/client/config/config_helpers.py", line 668, in load_connector_config_map_from_file
+    _load_yml_data_into_map(config_data, config_map)
+  File "/root/hb_quant/hummingbot/client/config/config_helpers.py", line 750, in _load_yml_data_into_map
+    config_validation_errors = cm.validate_model()  # try coercing values to appropriate type
+  File "/root/hb_quant/hummingbot/client/config/config_helpers.py", line 199, in validate_model
+    self.decrypt_all_secure_data()
+  File "/root/hb_quant/hummingbot/client/config/config_helpers.py", line 237, in decrypt_all_secure_data
+    decrypted_value = Security.secrets_manager.decrypt_secret_value(attr=traversal_item.attr, value=value)
+  File "/root/hb_quant/hummingbot/client/config/config_crypt.py", line 59, in decrypt_secret_value
+    value = binascii.unhexlify(value)
+binascii.Error: Non-hexadecimal digit found
+2024-05-01 16:14:10,145 - 429660 - hummingbot.core.utils.async_utils - ERROR - Unhandled error in background task: 'utf-8' codec can't decode byte 0xd1 in position 0: invalid continuation byte
+Traceback (most recent call last):
+  File "/root/hb_quant/hummingbot/core/utils/async_utils.py", line 9, in safe_wrapper
+    return await c
+  File "/root/hb_quant/hummingbot/core/utils/async_call_scheduler.py", line 127, in call_async
+    return await self.schedule_async_call(coro, timeout_seconds, app_warning_msg=app_warning_msg)
+  File "/root/hb_quant/hummingbot/core/utils/async_call_scheduler.py", line 116, in schedule_async_call
+    return await fut
+  File "/root/hb_quant/hummingbot/core/utils/async_call_scheduler.py", line 79, in _coro_scheduler
+    fut.set_result(await coro)
+  File "/root/miniconda3/envs/hummingbot/lib/python3.10/concurrent/futures/thread.py", line 58, in run
+    result = self.fn(*self.args, **self.kwargs)
+  File "/root/hb_quant/hummingbot/client/config/security.py", line 65, in decrypt_all
+    cls.decrypt_connector_config(file)
+  File "/root/hb_quant/hummingbot/client/config/security.py", line 71, in decrypt_connector_config
+    cls._secure_configs[connector_name] = load_connector_config_map_from_file(file_path)
+  File "/root/hb_quant/hummingbot/client/config/config_helpers.py", line 668, in load_connector_config_map_from_file
+    _load_yml_data_into_map(config_data, config_map)
+  File "/root/hb_quant/hummingbot/client/config/config_helpers.py", line 750, in _load_yml_data_into_map
+    config_validation_errors = cm.validate_model()  # try coercing values to appropriate type
+  File "/root/hb_quant/hummingbot/client/config/config_helpers.py", line 199, in validate_model
+    self.decrypt_all_secure_data()
+  File "/root/hb_quant/hummingbot/client/config/config_helpers.py", line 237, in decrypt_all_secure_data
+    decrypted_value = Security.secrets_manager.decrypt_secret_value(attr=traversal_item.attr, value=value)
+  File "/root/hb_quant/hummingbot/client/config/config_crypt.py", line 60, in decrypt_secret_value
+    decrypted_value = Account.decrypt(value.decode(), self._password).decode()
+UnicodeDecodeError: 'utf-8' codec can't decode byte 0xd1 in position 0: invalid continuation byte
+2024-05-01 16:23:05,399 - 432076 - hummingbot.core.utils.async_utils - ERROR - Unhandled error in background task: Non-hexadecimal digit found
+Traceback (most recent call last):
+  File "/root/hb_quant/hummingbot/core/utils/async_utils.py", line 9, in safe_wrapper
+    return await c
+  File "/root/hb_quant/hummingbot/core/utils/async_call_scheduler.py", line 127, in call_async
+    return await self.schedule_async_call(coro, timeout_seconds, app_warning_msg=app_warning_msg)
+  File "/root/hb_quant/hummingbot/core/utils/async_call_scheduler.py", line 116, in schedule_async_call
+    return await fut
+  File "/root/hb_quant/hummingbot/core/utils/async_call_scheduler.py", line 79, in _coro_scheduler
+    fut.set_result(await coro)
+  File "/root/miniconda3/envs/hummingbot/lib/python3.10/concurrent/futures/thread.py", line 58, in run
+    result = self.fn(*self.args, **self.kwargs)
+  File "/root/hb_quant/hummingbot/client/config/security.py", line 65, in decrypt_all
+    cls.decrypt_connector_config(file)
+  File "/root/hb_quant/hummingbot/client/config/security.py", line 71, in decrypt_connector_config
+    cls._secure_configs[connector_name] = load_connector_config_map_from_file(file_path)
+  File "/root/hb_quant/hummingbot/client/config/config_helpers.py", line 668, in load_connector_config_map_from_file
+    _load_yml_data_into_map(config_data, config_map)
+  File "/root/hb_quant/hummingbot/client/config/config_helpers.py", line 750, in _load_yml_data_into_map
+    config_validation_errors = cm.validate_model()  # try coercing values to appropriate type
+  File "/root/hb_quant/hummingbot/client/config/config_helpers.py", line 199, in validate_model
+    self.decrypt_all_secure_data()
+  File "/root/hb_quant/hummingbot/client/config/config_helpers.py", line 237, in decrypt_all_secure_data
+    decrypted_value = Security.secrets_manager.decrypt_secret_value(attr=traversal_item.attr, value=value)
+  File "/root/hb_quant/hummingbot/client/config/config_crypt.py", line 59, in decrypt_secret_value
+    value = binascii.unhexlify(value)
+binascii.Error: Non-hexadecimal digit found
+2024-05-01 16:24:16,478 - 432881 - hummingbot.core.utils.async_utils - ERROR - Unhandled error in background task: Non-hexadecimal digit found
+Traceback (most recent call last):
+  File "/root/hb_quant/hummingbot/core/utils/async_utils.py", line 9, in safe_wrapper
+    return await c
+  File "/root/hb_quant/hummingbot/core/utils/async_call_scheduler.py", line 127, in call_async
+    return await self.schedule_async_call(coro, timeout_seconds, app_warning_msg=app_warning_msg)
+  File "/root/hb_quant/hummingbot/core/utils/async_call_scheduler.py", line 116, in schedule_async_call
+    return await fut
+  File "/root/hb_quant/hummingbot/core/utils/async_call_scheduler.py", line 79, in _coro_scheduler
+    fut.set_result(await coro)
+  File "/root/miniconda3/envs/hummingbot/lib/python3.10/concurrent/futures/thread.py", line 58, in run
+    result = self.fn(*self.args, **self.kwargs)
+  File "/root/hb_quant/hummingbot/client/config/security.py", line 65, in decrypt_all
+    cls.decrypt_connector_config(file)
+  File "/root/hb_quant/hummingbot/client/config/security.py", line 71, in decrypt_connector_config
+    cls._secure_configs[connector_name] = load_connector_config_map_from_file(file_path)
+  File "/root/hb_quant/hummingbot/client/config/config_helpers.py", line 668, in load_connector_config_map_from_file
+    _load_yml_data_into_map(config_data, config_map)
+  File "/root/hb_quant/hummingbot/client/config/config_helpers.py", line 750, in _load_yml_data_into_map
+    config_validation_errors = cm.validate_model()  # try coercing values to appropriate type
+  File "/root/hb_quant/hummingbot/client/config/config_helpers.py", line 199, in validate_model
+    self.decrypt_all_secure_data()
+  File "/root/hb_quant/hummingbot/client/config/config_helpers.py", line 237, in decrypt_all_secure_data
+    decrypted_value = Security.secrets_manager.decrypt_secret_value(attr=traversal_item.attr, value=value)
+  File "/root/hb_quant/hummingbot/client/config/config_crypt.py", line 59, in decrypt_secret_value
+    value = binascii.unhexlify(value)
+binascii.Error: Non-hexadecimal digit found
+2024-05-01 16:27:27,795 - 434067 - hummingbot.core.utils.async_utils - ERROR - Unhandled error in background task: 'utf-8' codec can't decode byte 0xd1 in position 0: invalid continuation byte
+Traceback (most recent call last):
+  File "/root/hb_quant/hummingbot/core/utils/async_utils.py", line 9, in safe_wrapper
+    return await c
+  File "/root/hb_quant/hummingbot/core/utils/async_call_scheduler.py", line 127, in call_async
+    return await self.schedule_async_call(coro, timeout_seconds, app_warning_msg=app_warning_msg)
+  File "/root/hb_quant/hummingbot/core/utils/async_call_scheduler.py", line 116, in schedule_async_call
+    return await fut
+  File "/root/hb_quant/hummingbot/core/utils/async_call_scheduler.py", line 79, in _coro_scheduler
+    fut.set_result(await coro)
+  File "/root/miniconda3/envs/hummingbot/lib/python3.10/concurrent/futures/thread.py", line 58, in run
+    result = self.fn(*self.args, **self.kwargs)
+  File "/root/hb_quant/hummingbot/client/config/security.py", line 65, in decrypt_all
+    cls.decrypt_connector_config(file)
+  File "/root/hb_quant/hummingbot/client/config/security.py", line 71, in decrypt_connector_config
+    cls._secure_configs[connector_name] = load_connector_config_map_from_file(file_path)
+  File "/root/hb_quant/hummingbot/client/config/config_helpers.py", line 668, in load_connector_config_map_from_file
+    _load_yml_data_into_map(config_data, config_map)
+  File "/root/hb_quant/hummingbot/client/config/config_helpers.py", line 750, in _load_yml_data_into_map
+    config_validation_errors = cm.validate_model()  # try coercing values to appropriate type
+  File "/root/hb_quant/hummingbot/client/config/config_helpers.py", line 199, in validate_model
+    self.decrypt_all_secure_data()
+  File "/root/hb_quant/hummingbot/client/config/config_helpers.py", line 237, in decrypt_all_secure_data
+    decrypted_value = Security.secrets_manager.decrypt_secret_value(attr=traversal_item.attr, value=value)
+  File "/root/hb_quant/hummingbot/client/config/config_crypt.py", line 60, in decrypt_secret_value
+    decrypted_value = Account.decrypt(value.decode(), self._password).decode()
+UnicodeDecodeError: 'utf-8' codec can't decode byte 0xd1 in position 0: invalid continuation byte
+2024-05-01 16:40:38,656 - 438521 - hummingbot.core.utils.async_utils - ERROR - Unhandled error in background task: 'utf-8' codec can't decode byte 0xd1 in position 0: invalid continuation byte
+Traceback (most recent call last):
+  File "/root/hb_quant/hummingbot/core/utils/async_utils.py", line 9, in safe_wrapper
+    return await c
+  File "/root/hb_quant/hummingbot/core/utils/async_call_scheduler.py", line 127, in call_async
+    return await self.schedule_async_call(coro, timeout_seconds, app_warning_msg=app_warning_msg)
+  File "/root/hb_quant/hummingbot/core/utils/async_call_scheduler.py", line 116, in schedule_async_call
+    return await fut
+  File "/root/hb_quant/hummingbot/core/utils/async_call_scheduler.py", line 79, in _coro_scheduler
+    fut.set_result(await coro)
+  File "/root/miniconda3/envs/hummingbot/lib/python3.10/concurrent/futures/thread.py", line 58, in run
+    result = self.fn(*self.args, **self.kwargs)
+  File "/root/hb_quant/hummingbot/client/config/security.py", line 65, in decrypt_all
+    cls.decrypt_connector_config(file)
+  File "/root/hb_quant/hummingbot/client/config/security.py", line 71, in decrypt_connector_config
+    cls._secure_configs[connector_name] = load_connector_config_map_from_file(file_path)
+  File "/root/hb_quant/hummingbot/client/config/config_helpers.py", line 668, in load_connector_config_map_from_file
+    _load_yml_data_into_map(config_data, config_map)
+  File "/root/hb_quant/hummingbot/client/config/config_helpers.py", line 750, in _load_yml_data_into_map
+    config_validation_errors = cm.validate_model()  # try coercing values to appropriate type
+  File "/root/hb_quant/hummingbot/client/config/config_helpers.py", line 199, in validate_model
+    self.decrypt_all_secure_data()
+  File "/root/hb_quant/hummingbot/client/config/config_helpers.py", line 237, in decrypt_all_secure_data
+    decrypted_value = Security.secrets_manager.decrypt_secret_value(attr=traversal_item.attr, value=value)
+  File "/root/hb_quant/hummingbot/client/config/config_crypt.py", line 60, in decrypt_secret_value
+    decrypted_value = Account.decrypt(value.decode(), self._password).decode()
+UnicodeDecodeError: 'utf-8' codec can't decode byte 0xd1 in position 0: invalid continuation byte
+2024-05-01 17:02:20,200 - 444425 - hummingbot.core.utils.async_utils - ERROR - Unhandled error in background task: 'utf-8' codec can't decode byte 0xd1 in position 0: invalid continuation byte
+Traceback (most recent call last):
+  File "/root/hb_quant/hummingbot/core/utils/async_utils.py", line 9, in safe_wrapper
+    return await c
+  File "/root/hb_quant/hummingbot/core/utils/async_call_scheduler.py", line 127, in call_async
+    return await self.schedule_async_call(coro, timeout_seconds, app_warning_msg=app_warning_msg)
+  File "/root/hb_quant/hummingbot/core/utils/async_call_scheduler.py", line 116, in schedule_async_call
+    return await fut
+  File "/root/hb_quant/hummingbot/core/utils/async_call_scheduler.py", line 79, in _coro_scheduler
+    fut.set_result(await coro)
+  File "/root/miniconda3/envs/hummingbot/lib/python3.10/concurrent/futures/thread.py", line 58, in run
+    result = self.fn(*self.args, **self.kwargs)
+  File "/root/hb_quant/hummingbot/client/config/security.py", line 65, in decrypt_all
+    cls.decrypt_connector_config(file)
+  File "/root/hb_quant/hummingbot/client/config/security.py", line 71, in decrypt_connector_config
+    cls._secure_configs[connector_name] = load_connector_config_map_from_file(file_path)
+  File "/root/hb_quant/hummingbot/client/config/config_helpers.py", line 668, in load_connector_config_map_from_file
+    _load_yml_data_into_map(config_data, config_map)
+  File "/root/hb_quant/hummingbot/client/config/config_helpers.py", line 750, in _load_yml_data_into_map
+    config_validation_errors = cm.validate_model()  # try coercing values to appropriate type
+  File "/root/hb_quant/hummingbot/client/config/config_helpers.py", line 199, in validate_model
+    self.decrypt_all_secure_data()
+  File "/root/hb_quant/hummingbot/client/config/config_helpers.py", line 237, in decrypt_all_secure_data
+    decrypted_value = Security.secrets_manager.decrypt_secret_value(attr=traversal_item.attr, value=value)
+  File "/root/hb_quant/hummingbot/client/config/config_crypt.py", line 60, in decrypt_secret_value
+    decrypted_value = Account.decrypt(value.decode(), self._password).decode()
+UnicodeDecodeError: 'utf-8' codec can't decode byte 0xd1 in position 0: invalid continuation byte
+2024-05-01 17:05:05,448 - 445410 - hummingbot.core.utils.async_utils - ERROR - Unhandled error in background task: 'utf-8' codec can't decode byte 0xd1 in position 0: invalid continuation byte
+Traceback (most recent call last):
+  File "/root/hb_quant/hummingbot/core/utils/async_utils.py", line 9, in safe_wrapper
+    return await c
+  File "/root/hb_quant/hummingbot/core/utils/async_call_scheduler.py", line 127, in call_async
+    return await self.schedule_async_call(coro, timeout_seconds, app_warning_msg=app_warning_msg)
+  File "/root/hb_quant/hummingbot/core/utils/async_call_scheduler.py", line 116, in schedule_async_call
+    return await fut
+  File "/root/hb_quant/hummingbot/core/utils/async_call_scheduler.py", line 79, in _coro_scheduler
+    fut.set_result(await coro)
+  File "/root/miniconda3/envs/hummingbot/lib/python3.10/concurrent/futures/thread.py", line 58, in run
+    result = self.fn(*self.args, **self.kwargs)
+  File "/root/hb_quant/hummingbot/client/config/security.py", line 65, in decrypt_all
+    cls.decrypt_connector_config(file)
+  File "/root/hb_quant/hummingbot/client/config/security.py", line 71, in decrypt_connector_config
+    cls._secure_configs[connector_name] = load_connector_config_map_from_file(file_path)
+  File "/root/hb_quant/hummingbot/client/config/config_helpers.py", line 668, in load_connector_config_map_from_file
+    _load_yml_data_into_map(config_data, config_map)
+  File "/root/hb_quant/hummingbot/client/config/config_helpers.py", line 750, in _load_yml_data_into_map
+    config_validation_errors = cm.validate_model()  # try coercing values to appropriate type
+  File "/root/hb_quant/hummingbot/client/config/config_helpers.py", line 199, in validate_model
+    self.decrypt_all_secure_data()
+  File "/root/hb_quant/hummingbot/client/config/config_helpers.py", line 237, in decrypt_all_secure_data
+    decrypted_value = Security.secrets_manager.decrypt_secret_value(attr=traversal_item.attr, value=value)
+  File "/root/hb_quant/hummingbot/client/config/config_crypt.py", line 60, in decrypt_secret_value
+    decrypted_value = Account.decrypt(value.decode(), self._password).decode()
+UnicodeDecodeError: 'utf-8' codec can't decode byte 0xd1 in position 0: invalid continuation byte

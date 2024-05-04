@@ -56,8 +56,8 @@ class TrailingGridExecutor(ExecutorBase):
         self._current_retries = 0
         self._max_retries = max_retries
         self._last_executor_time = 0
-
-        self.stop_queue = self.config.stop_queue
+        if not isinstance(config, TrailingGridExecutorConfig):
+            self.stop_queue = self.config.stop_queue
         # 保存信号状态变量
         self._signal: int = 1
         self._signal_update: bool = True
@@ -519,7 +519,8 @@ class TrailingGridExecutor(ExecutorBase):
             self.place_close_order_and_cancel_open_orders()
             self._current_retries += 1
         await asyncio.sleep(1.0)
-        await self.stop_queue.put(self.config.trading_pair)
+        if hasattr(self, 'stop_queue'):
+            await self.stop_queue.put(self.config.trading_pair)
 
     def close_execution_by(self, close_type):
         self.close_type = close_type
