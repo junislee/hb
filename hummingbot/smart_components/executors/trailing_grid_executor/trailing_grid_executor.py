@@ -546,7 +546,7 @@ class TrailingGridExecutor(ExecutorBase):
                 is_maker=OrderType.LIMIT,
                 order_type=OrderType.LIMIT,
                 order_side=self.config.side,
-                amount=self.config.amount_quote,
+                amount=self.config.amount_quote / self.current_market_price,
                 price=self.current_market_price,
                 leverage=Decimal(self.config.leverage),
             )
@@ -556,7 +556,7 @@ class TrailingGridExecutor(ExecutorBase):
                 is_maker=OrderType.LIMIT,
                 order_type=OrderType.LIMIT,
                 order_side=self.config.side,
-                amount=self.config.amount_quote,
+                amount=self.config.amount_quote / self.current_market_price,
                 price=self.current_market_price,
             )
         adjusted_order_candidates = self.adjust_order_candidates(self.config.connector_name, [order_candidate])
